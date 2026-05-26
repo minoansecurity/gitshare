@@ -48,6 +48,8 @@ body {
   background: #fef3c7;
   border-bottom: 1px solid #f59e0b;
 }
+.incident-banner a { color: #92400e; font-weight: 600; }
+.incident-banner a:hover { color: #78350f; }
 
 /* ========= Header ========= */
 header {

@@ -372,18 +372,28 @@
     cardName.style.fontSize = nameSz + 'px';
     cardName.style.color = txtColor;
 
-    // Description
+    // Description — render each word as a separate span for html2canvas Firefox compat
+    cardDesc.innerHTML = '';
     if (toggles.description.checked && repoData.description) {
-      cardDesc.textContent = repoData.description;
       cardDesc.style.display = '';
       cardDesc.style.fontSize = Math.round(16 * s) + 'px';
       cardDesc.style.color = txtColor;
       cardDesc.style.margin = '0 0 ' + gap + 'px 0';
       cardDesc.style.opacity = '0.8';
-      cardDesc.style.wordWrap = 'break-word';
+      cardDesc.style.lineHeight = '1.4';
+      var words = repoData.description.split(/\s+/);
+      for (var wi = 0; wi < words.length; wi++) {
+        if (wi > 0) {
+          var sp = document.createElement('span');
+          sp.innerHTML = '&nbsp;';
+          cardDesc.appendChild(sp);
+        }
+        var ws = document.createElement('span');
+        ws.textContent = words[wi];
+        cardDesc.appendChild(ws);
+      }
     } else {
       cardDesc.style.display = 'none';
-      cardDesc.textContent = '';
     }
 
     // Stats
