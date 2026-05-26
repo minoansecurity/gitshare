@@ -271,18 +271,20 @@
 
       // Convert avatar to data URL so html2canvas never needs cross-origin fetch
       if (repoData.avatarURL) {
-        var img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = function () {
-          var c = document.createElement('canvas');
-          c.width = img.naturalWidth;
-          c.height = img.naturalHeight;
-          c.getContext('2d').drawImage(img, 0, 0);
-          try { repoData.avatarURL = c.toDataURL('image/png'); } catch (e) { /* keep original URL */ }
-          renderCard();
-        };
-        img.onerror = function () { renderCard(); };
-        img.src = repoData.avatarURL;
+        fetch(repoData.avatarURL)
+          .then(function (r) { return r.blob(); })
+          .then(function (blob) {
+            return new Promise(function (resolve) {
+              var reader = new FileReader();
+              reader.onloadend = function () { resolve(reader.result); };
+              reader.readAsDataURL(blob);
+            });
+          })
+          .then(function (dataURL) {
+            repoData.avatarURL = dataURL;
+          })
+          .catch(function () { /* keep original URL */ })
+          .finally(function () { renderCard(); });
       } else {
         renderCard();
       }
@@ -481,17 +483,24 @@
     downloadBtn.classList.add('busy');
     downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-0-.002H2.75h10.5ZM7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06l1.97 1.969Z"/></svg> Generating...';
 
-    var prevTransform = cardWrapper.style.transform;
-    cardWrapper.style.transform = 'none';
+    // Clone the card offscreen so we don't disturb the preview
+    var clone = cardWrapper.cloneNode(true);
+    clone.style.position = 'fixed';
+    clone.style.left = '-9999px';
+    clone.style.top = '0';
+    clone.style.transform = 'none';
+    clone.style.width = dim[0] + 'px';
+    clone.style.height = dim[1] + 'px';
+    document.body.appendChild(clone);
 
     var timeout = setTimeout(function () {
-      cardWrapper.style.transform = prevTransform;
+      if (clone.parentNode) clone.parentNode.removeChild(clone);
       downloadBtn.classList.remove('busy');
       downloadBtn.innerHTML = dlBtnHTML;
       alert('Download timed out. Your browser may be blocking cross-origin images. Try disabling content blockers or use Chrome.');
     }, 5000);
 
-    html2canvas(cardWrapper, {
+    html2canvas(clone, {
       width: dim[0], height: dim[1], scale: 2,
       useCORS: true, allowTaint: false, backgroundColor: null, logging: false
     }).then(function (canvas) {
@@ -514,7 +523,7 @@
       alert('Download failed: ' + err.message);
     }).finally(function () {
       clearTimeout(timeout);
-      cardWrapper.style.transform = prevTransform;
+      if (clone.parentNode) clone.parentNode.removeChild(clone);
       downloadBtn.classList.remove('busy');
       downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg> Downloaded!';
       setTimeout(function () { downloadBtn.innerHTML = dlBtnHTML; }, 2500);
