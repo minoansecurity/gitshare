@@ -451,24 +451,28 @@ main {
 }
 .branding-reset-btn:hover { border-color: var(--accent); color: var(--accent); }
 .branding-position-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
 }
 .pos-btn {
-  flex: 1;
-  padding: 7px 0;
-  font-size: 13px;
+  padding: 8px 0;
+  font-size: 16px;
   font-weight: 500;
   border: none;
   background: var(--input-bg);
   color: var(--muted);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
+  text-align: center;
+  line-height: 1.2;
 }
-.pos-btn + .pos-btn { border-left: 1px solid var(--border); }
-.pos-btn small { font-size: 10px; font-weight: 400; }
+.pos-btn:nth-child(2) { border-left: 1px solid var(--border); }
+.pos-btn:nth-child(3), .pos-btn:nth-child(4) { border-top: 1px solid var(--border); }
+.pos-btn:nth-child(4) { border-left: 1px solid var(--border); }
+.pos-btn small { display: block; font-size: 9px; font-weight: 400; margin-top: 2px; }
 .pos-btn.active { background: var(--accent-subtle); color: var(--accent); font-weight: 600; }
 .pos-btn:hover:not(.active) { background: var(--surface-alt); }
 
