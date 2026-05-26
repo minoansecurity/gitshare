@@ -461,9 +461,6 @@
     var ext = extensions[fmt] || '.png';
     var filename = basename + ext;
 
-    // Open a blank tab immediately (inside user gesture) so Safari doesn't block it
-    var w = window.open('', '_blank');
-
     downloadBtn.classList.add('busy');
     downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-0-.002H2.75h10.5ZM7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06l1.97 1.969Z"/></svg> Generating...';
 
@@ -476,22 +473,16 @@
     }).then(function (canvas) {
       canvas.toBlob(function (blob) {
         var url = URL.createObjectURL(blob);
-        if (w) {
-          w.location.href = url;
-        } else {
-          // Fallback: try anchor download
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
         setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
         setTimeout(function () { starModal.style.display = ''; }, 300);
       }, mime, 0.95);
     }).catch(function (err) {
-      if (w) w.close();
       alert('Download failed: ' + err.message);
     }).finally(function () {
       cardWrapper.style.transform = prevTransform;
