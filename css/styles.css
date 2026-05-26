@@ -42,14 +42,17 @@ body {
 /* ========= Incident Banner ========= */
 .incident-banner {
   text-align: center;
-  padding: 10px 20px;
-  font-size: 13px;
-  color: #92400e;
-  background: #fef3c7;
-  border-bottom: 1px solid #f59e0b;
+  padding: 14px 20px;
+  font-size: 15px;
+  color: #7c2d12;
+  background: #fed7aa;
+  border-bottom: 2px solid #ea580c;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
 }
-.incident-banner a { color: #92400e; font-weight: 600; }
-.incident-banner a:hover { color: #78350f; }
+.incident-banner strong { font-size: 16px; }
+.incident-banner a { color: #9a3412; font-weight: 600; text-decoration: underline; }
+.incident-banner a:hover { color: #7c2d12; }
 
 /* ========= Header ========= */
 header {
@@ -197,7 +200,7 @@ main {
   margin-bottom: 16px;
 }
 #card .avatar { width: 48px; height: 48px; border-radius: 50%; }
-#card .repo-name { font-size: 20px; font-weight: 600; word-wrap: break-word; overflow-wrap: break-word; }
+#card .repo-name { font-size: 20px; font-weight: 600; word-wrap: break-word; overflow-wrap: break-word; letter-spacing: 0.1px; }
 #card .card-desc { font-size: 16px; line-height: 1.4; word-wrap: break-word; overflow-wrap: break-word; }
 #card .stats { display: flex; gap: 24px; flex-wrap: wrap; font-size: 14px; }
 #card .stat { display: flex; align-items: center; gap: 6px; }

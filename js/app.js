@@ -71,7 +71,7 @@
   var brandingFile = $('branding-file');
   var brandingReset = $('branding-reset');
 
-  var DEFAULT_BRANDING_SRC = 'branding-default.png';
+  var DEFAULT_BRANDING_SRC = 'assets/branding-default.png';
   var brandingScale = $('branding-scale');
   var brandingScaleValue = $('branding-scale-value');
   var brandingOpacity = $('branding-opacity');

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.svg" alt="GitShare.ch" width="280">
+  <img src="assets/logo.svg" alt="GitShare.ch" width="280">
 </p>
 
 <p align="center">
