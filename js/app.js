@@ -494,7 +494,7 @@
       return result.download({
         format: fmt === 'jpeg' ? 'jpg' : fmt,
         filename: basename,
-        scale: 2,
+        scale: 3,
         quality: 0.95
       });
     }).then(function () {
