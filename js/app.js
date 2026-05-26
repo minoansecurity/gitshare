@@ -269,25 +269,7 @@
         contributors: null
       };
 
-      // Convert avatar to data URL so html2canvas never needs cross-origin fetch
-      if (repoData.avatarURL) {
-        fetch(repoData.avatarURL)
-          .then(function (r) { return r.blob(); })
-          .then(function (blob) {
-            return new Promise(function (resolve) {
-              var reader = new FileReader();
-              reader.onloadend = function () { resolve(reader.result); };
-              reader.readAsDataURL(blob);
-            });
-          })
-          .then(function (dataURL) {
-            repoData.avatarURL = dataURL;
-          })
-          .catch(function () { /* keep original URL */ })
-          .finally(function () { renderCard(); });
-      } else {
-        renderCard();
-      }
+      renderCard();
 
       if (toggles.contributors.checked) fetchContributors(repo);
     })
@@ -466,7 +448,7 @@
     cardWrapper.style.transformOrigin = 'center center';
   }
 
-  // Download via html2canvas
+  // Download via snapdom
   var dlBtnHTML = downloadBtn.innerHTML;
 
   function doDownload() {
@@ -474,37 +456,27 @@
     var dim = getDimension();
     var fmt = formatSelect.value;
     var basename = currentRepo.replace('/', '-').replace(/[<>:"/\\|?*\x00-\x1f]/g, '');
-    var mimeTypes = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
     var extensions = { png: '.png', jpeg: '.jpg', webp: '.webp' };
-    var mime = mimeTypes[fmt] || 'image/png';
     var ext = extensions[fmt] || '.png';
     var filename = basename + ext;
 
     downloadBtn.classList.add('busy');
     downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-0-.002H2.75h10.5ZM7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06l1.97 1.969Z"/></svg> Generating...';
 
-    // Clone the card offscreen so we don't disturb the preview
-    var clone = cardWrapper.cloneNode(true);
-    clone.style.position = 'fixed';
-    clone.style.left = '-9999px';
-    clone.style.top = '0';
-    clone.style.transform = 'none';
-    clone.style.width = dim[0] + 'px';
-    clone.style.height = dim[1] + 'px';
-    document.body.appendChild(clone);
+    var prevTransform = cardWrapper.style.transform;
+    cardWrapper.style.transform = 'none';
 
-    var timeout = setTimeout(function () {
-      if (clone.parentNode) clone.parentNode.removeChild(clone);
-      downloadBtn.classList.remove('busy');
-      downloadBtn.innerHTML = dlBtnHTML;
-      alert('Download timed out. Your browser may be blocking cross-origin images. Try disabling content blockers or use Chrome.');
-    }, 5000);
-
-    html2canvas(clone, {
-      width: dim[0], height: dim[1], scale: 2,
-      useCORS: true, allowTaint: false, backgroundColor: null, logging: false
-    }).then(function (canvas) {
+    snapdom(cardWrapper).then(function (result) {
+      var exportFn = fmt === 'jpeg' ? result.toJpg : fmt === 'webp' ? result.toWebp : result.toPng;
+      return exportFn.call(result, { scale: 2, quality: 0.95 });
+    }).then(function (img) {
+      // img is an HTMLImageElement with the data URL as src
+      var canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      canvas.getContext('2d').drawImage(img, 0, 0);
       return new Promise(function (resolve, reject) {
+        var mimeTypes = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
         canvas.toBlob(function (blob) {
           if (!blob) { reject(new Error('Failed to create image')); return; }
           var url = URL.createObjectURL(blob);
@@ -517,13 +489,12 @@
           setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
           setTimeout(function () { starModal.style.display = ''; }, 300);
           resolve();
-        }, mime, 0.95);
+        }, mimeTypes[fmt] || 'image/png', 0.95);
       });
     }).catch(function (err) {
       alert('Download failed: ' + err.message);
     }).finally(function () {
-      clearTimeout(timeout);
-      if (clone.parentNode) clone.parentNode.removeChild(clone);
+      cardWrapper.style.transform = prevTransform;
       downloadBtn.classList.remove('busy');
       downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg> Downloaded!';
       setTimeout(function () { downloadBtn.innerHTML = dlBtnHTML; }, 2500);
