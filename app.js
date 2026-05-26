@@ -624,6 +624,7 @@
   brandingReset.addEventListener('click', function () {
     brandingDataURL = null;
     brandingFile.value = '';
+    showBranding.checked = false;
     renderCard();
   });
   brandingScale.addEventListener('input', function () {
