@@ -454,7 +454,7 @@
     if (!repoData) return;
     var dim = getDimension();
     var fmt = formatSelect.value;
-    var basename = currentRepo.replace('/', '-').replace(/[^a-zA-Z0-9._-]/g, '');
+    var basename = currentRepo.replace('/', '-').replace(/[<>:"/\\|?*\x00-\x1f]/g, '');
     var mimeTypes = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
     var extensions = { png: '.png', jpeg: '.jpg', webp: '.webp' };
     var mime = mimeTypes[fmt] || 'image/png';
