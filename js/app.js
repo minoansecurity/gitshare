@@ -269,7 +269,34 @@
         contributors: null
       };
 
-      renderCard();
+      // Convert avatar to data URL so capture libraries don't need cross-origin fetch
+      if (repoData.avatarURL) {
+        (function convertAvatar() {
+          var avatarSrc = repoData.avatarURL;
+          // Try Image CORS first (works on Chrome/Firefox)
+          var img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = function () {
+            var c = document.createElement('canvas');
+            c.width = img.naturalWidth;
+            c.height = img.naturalHeight;
+            c.getContext('2d').drawImage(img, 0, 0);
+            try { repoData.avatarURL = c.toDataURL('image/png'); } catch (e) { /* keep original */ }
+            renderCard();
+          };
+          img.onerror = function () {
+            // Fallback: fetch as blob (for Safari/DuckDuckGo where Image CORS fails)
+            fetch(avatarSrc).then(function (r) { return r.blob(); }).then(function (blob) {
+              var reader = new FileReader();
+              reader.onloadend = function () { repoData.avatarURL = reader.result; renderCard(); };
+              reader.readAsDataURL(blob);
+            }).catch(function () { renderCard(); });
+          };
+          img.src = avatarSrc;
+        })();
+      } else {
+        renderCard();
+      }
 
       if (toggles.contributors.checked) fetchContributors(repo);
     })
@@ -463,38 +490,18 @@
     downloadBtn.classList.add('busy');
     downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-0-.002H2.75h10.5ZM7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06l1.97 1.969Z"/></svg> Generating...';
 
-    var prevTransform = cardWrapper.style.transform;
-    cardWrapper.style.transform = 'none';
-
     snapdom(cardWrapper).then(function (result) {
-      var exportFn = fmt === 'jpeg' ? result.toJpg : fmt === 'webp' ? result.toWebp : result.toPng;
-      return exportFn.call(result, { scale: 2, quality: 0.95 });
-    }).then(function (img) {
-      // img is an HTMLImageElement with the data URL as src
-      var canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth || img.width;
-      canvas.height = img.naturalHeight || img.height;
-      canvas.getContext('2d').drawImage(img, 0, 0);
-      return new Promise(function (resolve, reject) {
-        var mimeTypes = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
-        canvas.toBlob(function (blob) {
-          if (!blob) { reject(new Error('Failed to create image')); return; }
-          var url = URL.createObjectURL(blob);
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
-          setTimeout(function () { starModal.style.display = ''; }, 300);
-          resolve();
-        }, mimeTypes[fmt] || 'image/png', 0.95);
+      return result.download({
+        format: fmt === 'jpeg' ? 'jpg' : fmt,
+        filename: basename,
+        scale: 2,
+        quality: 0.95
       });
+    }).then(function () {
+      setTimeout(function () { starModal.style.display = ''; }, 300);
     }).catch(function (err) {
       alert('Download failed: ' + err.message);
     }).finally(function () {
-      cardWrapper.style.transform = prevTransform;
       downloadBtn.classList.remove('busy');
       downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg> Downloaded!';
       setTimeout(function () { downloadBtn.innerHTML = dlBtnHTML; }, 2500);
