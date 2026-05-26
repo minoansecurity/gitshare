@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://avatars.githubusercontent.com data: blob:; connect-src https://api.github.com; form-action 'none'; base-uri 'self';">
+
   <meta name="referrer" content="no-referrer">
   <title>GitShare.ch - Turn GitHub Repos into Beautiful Screenshots for Social Media</title>
-  <meta name="description" content="Free online tool to turn any GitHub repository into a beautiful, customizable screenshot for Twitter, LinkedIn, Facebook, and Instagram. No login, no backend — runs entirely in your browser.">
+  <meta name="description" content="Free online tool to turn any GitHub repository into a beautiful, customizable screenshot for Twitter, LinkedIn, Facebook, and Instagram. No login required — runs entirely in your browser.">
   <meta name="keywords" content="GitHub screenshot, GitHub repo card, social media card generator, GitHub social image, open source, developer tools, repository screenshot">
   <meta name="author" content="Minoan Security GmbH">
   <meta name="robots" content="index, follow">
@@ -59,7 +59,7 @@
 </head>
 <body>
   <div class="oss-banner">
-    Free &amp; open source &mdash; if you find this useful, <a href="https://github.com/minoansecurity/gitshare" target="_blank" rel="noopener">star it on GitHub <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg></a>
+    Free &amp; open source &mdash; <a href="https://github.com/minoansecurity/gitshare" target="_blank" rel="noopener">&#9734; Star on GitHub</a> &middot; <a href="https://buymeacoffee.com/dimiprasakis" target="_blank" rel="noopener">&#9749; Support</a>
   </div>
   <header>
     <div class="logo">
@@ -69,7 +69,6 @@
       </svg>
       <h1>Git<span class="logo-accent">Share</span><span class="logo-tld">.ch</span></h1>
     </div>
-    <p class="logo-byline">by <a href="https://minoansecurity.com/" target="_blank" rel="noopener">Minoan Security GmbH</a></p>
     <h2 class="tagline">Beautiful GitHub repo screenshots for social media</h2>
   </header>
 
@@ -238,7 +237,7 @@
       <div class="settings-divider"></div>
 
       <h3>Branding</h3>
-      <label class="toggle-row"><span>Show logo</span><input type="checkbox" id="show-branding" checked><span class="toggle-switch"></span></label>
+      <label class="toggle-row"><span>Show logo</span><input type="checkbox" id="show-branding"><span class="toggle-switch"></span></label>
       <div id="branding-controls">
         <label class="file-upload-btn" id="branding-upload-label">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v11.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6H9.75A1.75 1.75 0 0 1 8 4.25V1.5ZM8 .794V4.25c0 .138.112.25.25.25h3.456L8 .794ZM2 1.75C2 .784 2.784 0 3.75 0h5.086c.464 0 .909.184 1.237.513l3.414 3.414c.329.328.513.773.513 1.237v8.086A1.75 1.75 0 0 1 12.25 15h-8.5A1.75 1.75 0 0 1 2 13.25Z"/></svg>
@@ -284,17 +283,26 @@
     </div>
   </main>
 
+  <section class="support-section support-inline" aria-label="Support GitShare.ch">
+    <div class="support-content">
+      <div class="support-text">
+        <h2>Made with love by one developer</h2>
+        <p>GitShare is free and always will be. If it saves you time, a coffee means the world and helps me keep building.</p>
+        <a href="https://buymeacoffee.com/dimiprasakis" target="_blank" rel="noopener" class="bmc-btn">Buy me a coffee &#9749;</a>
+      </div>
+      <div class="support-qr">
+        <img src="bmc-qr.png" alt="QR code to buy me a coffee" width="120" height="120" loading="lazy">
+      </div>
+    </div>
+  </section>
+
   <div class="star-modal-overlay" id="star-modal" style="display:none">
     <div class="star-modal">
       <button type="button" class="star-modal-close" id="star-modal-close">&times;</button>
-      <svg width="22" height="22" viewBox="0 0 16 16" fill="#f0ebe2"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
-      <p>Enjoying GitShare.ch?</p>
-      <p class="star-modal-sub">A star on GitHub helps others discover this free tool.</p>
-      <a href="https://github.com/minoansecurity/gitshare" target="_blank" rel="noopener" class="star-modal-btn">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
-        Star on GitHub
-      </a>
-      <button type="button" class="star-modal-dismiss" id="star-modal-dismiss">Maybe later</button>
+      <p style="font-size:24px;margin-bottom:4px">Nice screenshot! &#127881;</p>
+      <p class="star-modal-sub">GitShare is built and maintained by one developer. If you'd like to support the project, a coffee means the world.</p>
+      <a href="https://buymeacoffee.com/dimiprasakis" target="_blank" rel="noopener" class="star-modal-btn" style="background:#ffdd00;color:#082010">Buy me a coffee &#9749;</a>
+      <button type="button" class="star-modal-dismiss" id="star-modal-dismiss">No thanks</button>
     </div>
   </div>
 
@@ -317,7 +325,7 @@
   </section>
 
   <footer>
-    Made by <a href="https://minoansecurity.com/" target="_blank" rel="noopener">Minoan Security</a>
+    Made by Dimitrios Prasakis through <a href="https://minoansecurity.com/" target="_blank" rel="noopener">Minoan Security GmbH</a>
     &middot; <a href="https://github.com/minoansecurity/gitshare" class="github-link" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg> Open Source</a>
     <details class="license-details" open>
       <summary>MIT License &copy; 2026 Minoan Security GmbH</summary>
@@ -346,5 +354,6 @@ SOFTWARE.</pre>
   </footer>
 
   <script src="app.js"></script>
+  <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="dimiprasakis" data-description="Support me on Buy me a coffee!" data-message="GitShare is free and always will be. If it saves you time, a coffee means the world and helps me keep building." data-color="#FFDD00" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
 </body>
 </html>

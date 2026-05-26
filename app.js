@@ -268,7 +268,6 @@
         contributors: null
       };
       renderCard();
-      maybeShowStarModal();
 
       if (toggles.contributors.checked) fetchContributors(repo);
     })
@@ -475,7 +474,7 @@
       var ext = extensions[fmt] || '.png';
       var dataURL = canvas.toDataURL(mime, 0.95);
       downloadFile(dataURL, basename + ext);
-      maybeShowStarModal();
+      setTimeout(function () { starModal.style.display = ''; }, 300);
     }).catch(function (err) {
       alert('Download failed: ' + err.message);
     }).finally(function () {
@@ -495,15 +494,8 @@
     });
   }
 
-  // ---- Star modal (once per session, after first manual generate) ----
+  // ---- Support modal (on every download) ----
   var starModal = $('star-modal');
-  var starShown = false;
-  var isAutoGenerate = true;
-
-  function maybeShowStarModal() {
-    if (isAutoGenerate) return;
-    setTimeout(function () { starModal.style.display = ''; }, 300);
-  }
   $('star-modal-close').addEventListener('click', function () { starModal.style.display = 'none'; });
   $('star-modal-dismiss').addEventListener('click', function () { starModal.style.display = 'none'; });
   starModal.addEventListener('click', function (e) { if (e.target === starModal) starModal.style.display = 'none'; });
@@ -684,5 +676,4 @@
     generateBtn.click();
   }
   // After initial auto-generate, next clicks are manual
-  setTimeout(function () { isAutoGenerate = false; }, 2000);
 })();
