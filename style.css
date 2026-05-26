@@ -39,6 +39,16 @@ body {
 .oss-banner a:hover { text-decoration: underline; color: #fff; }
 .oss-banner svg { vertical-align: -1px; fill: #f0ebe2; }
 
+/* ========= Incident Banner ========= */
+.incident-banner {
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 13px;
+  color: #92400e;
+  background: #fef3c7;
+  border-bottom: 1px solid #f59e0b;
+}
+
 /* ========= Header ========= */
 header {
   text-align: center;
@@ -186,7 +196,7 @@ main {
 }
 #card .avatar { width: 48px; height: 48px; border-radius: 50%; }
 #card .repo-name { font-size: 20px; font-weight: 600; word-wrap: break-word; overflow-wrap: break-word; }
-#card .description { font-size: 16px; line-height: 1.5; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; }
+#card .card-desc { font-size: 16px; line-height: 1.4; word-wrap: break-word; overflow-wrap: break-word; }
 #card .stats { display: flex; gap: 24px; flex-wrap: wrap; font-size: 14px; }
 #card .stat { display: flex; align-items: center; gap: 6px; }
 #card .stat svg { width: 16px; height: 16px; }

@@ -58,8 +58,11 @@
   <script src="html2canvas.min.js"></script>
 </head>
 <body>
-  <div class="oss-banner">
+<div class="oss-banner">
     Free &amp; open source &mdash; <a href="https://github.com/minoansecurity/gitshare" target="_blank" rel="noopener">&#9734; Star on GitHub</a> &middot; <a href="https://buymeacoffee.com/dimiprasakis" target="_blank" rel="noopener">&#9749; Support</a>
+  </div>
+  <div class="incident-banner">
+    Screenshot generation currently does not work on Safari and DuckDuckGo browsers. Please try another browser, e.g. Firefox or Chrome. We are working on a fix.
   </div>
   <header>
     <div class="logo">
@@ -90,7 +93,7 @@
               <img class="avatar" id="card-avatar" src="" alt="">
               <span class="repo-name" id="card-name"></span>
             </div>
-            <div class="description" id="card-desc"></div>
+            <p class="card-desc" id="card-desc" style="display:none"></p>
             <div class="stats" id="card-stats"></div>
           </div>
           <div class="card-branding" id="card-branding" style="display:none">
@@ -271,6 +274,7 @@
       <h3>Elements</h3>
       <div class="toggle-list">
         <label class="toggle-row"><span>Avatar</span><input type="checkbox" id="show-avatar" checked><span class="toggle-switch"></span></label>
+        <label class="toggle-row"><span>Description</span><input type="checkbox" id="show-description" checked><span class="toggle-switch"></span></label>
         <label class="toggle-row"><span>Stars</span><input type="checkbox" id="show-stars" checked><span class="toggle-switch"></span></label>
         <label class="toggle-row"><span>Forks</span><input type="checkbox" id="show-forks" checked><span class="toggle-switch"></span></label>
         <label class="toggle-row"><span>Language</span><input type="checkbox" id="show-language" checked><span class="toggle-switch"></span></label>

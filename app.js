@@ -56,6 +56,7 @@
 
   var toggles = {
     avatar: $('show-avatar'),
+    description: $('show-description'),
     stars: $('show-stars'),
     forks: $('show-forks'),
     language: $('show-language'),
@@ -258,11 +259,11 @@
 
       repoData = {
         fullName: str(d.full_name, 100),
-        description: str(d.description, 500),
         stars: num(d.stargazers_count),
         forks: num(d.forks_count),
         language: str(d.language, 40),
         license: str(d.license ? d.license.spdx_id : '', 30),
+        description: str(d.description, 300),
         avatarURL: avatarUrl(d.owner ? d.owner.avatar_url : ''),
         issues: num(d.open_issues_count),
         contributors: null
@@ -329,13 +330,11 @@
     var pad = Math.round(40 * s);
     var avatarSz = Math.round(56 * s);
     var nameSz = Math.round(24 * s);
-    var descSz = Math.round(18 * s);
     var statSz = Math.round(16 * s);
     var dotSz = Math.round(14 * s);
     var svgSz = Math.round(18 * s);
     var gap = Math.round(20 * s);
     var statGap = Math.round(28 * s);
-    var descMb = Math.round(24 * s);
     var iconGap = Math.round(8 * s);
 
     // Wrapper = exact output resolution
@@ -374,12 +373,18 @@
     cardName.style.color = txtColor;
 
     // Description
-    cardDesc.textContent = repoData.description;
-    cardDesc.style.display = repoData.description ? '' : 'none';
-    cardDesc.style.fontSize = descSz + 'px';
-    cardDesc.style.lineHeight = '1.5';
-    cardDesc.style.color = txtColor;
-    cardDesc.style.marginBottom = descMb + 'px';
+    if (toggles.description.checked && repoData.description) {
+      cardDesc.textContent = repoData.description;
+      cardDesc.style.display = '';
+      cardDesc.style.fontSize = Math.round(16 * s) + 'px';
+      cardDesc.style.color = txtColor;
+      cardDesc.style.margin = '0 0 ' + gap + 'px 0';
+      cardDesc.style.opacity = '0.8';
+      cardDesc.style.wordWrap = 'break-word';
+    } else {
+      cardDesc.style.display = 'none';
+      cardDesc.textContent = '';
+    }
 
     // Stats
     cardStats.innerHTML = '';
