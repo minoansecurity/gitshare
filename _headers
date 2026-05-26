@@ -7,7 +7,7 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self'; script-src 'self' https://cdnjs.buymeacoffee.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://avatars.githubusercontent.com https://cdn.buymeacoffee.com data: blob:; connect-src https://api.github.com https://*.buymeacoffee.com; frame-src https://*.buymeacoffee.com; form-action 'none'; base-uri 'self';
 
-/style.css
+/styles.css
   Cache-Control: public, max-age=2592000, immutable
 
 /app.js
@@ -16,7 +16,7 @@
 /html2canvas.min.js
   Cache-Control: public, max-age=31536000, immutable
 
-/og.png
+/social-og.png
   Cache-Control: public, max-age=2592000
 
 /branding-default.png
