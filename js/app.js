@@ -472,7 +472,7 @@
       downloadBtn.classList.remove('busy');
       downloadBtn.innerHTML = dlBtnHTML;
       alert('Download timed out. Your browser may be blocking cross-origin images. Try disabling content blockers or use Chrome.');
-    }, 15000);
+    }, 5000);
 
     html2canvas(cardWrapper, {
       width: dim[0], height: dim[1], scale: 2,
