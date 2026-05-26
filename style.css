@@ -66,15 +66,15 @@ header h1 {
 .logo-byline {
   font-size: 11px;
   color: var(--muted);
-  margin-top: 4px;
-  letter-spacing: 0.02em;
+  margin-top: 2px;
+  opacity: 0.6;
 }
 .logo-byline a {
   color: var(--muted);
   text-decoration: none;
 }
-.logo-byline a:hover { text-decoration: underline; color: var(--accent); }
-.tagline { color: var(--muted); font-size: 15px; margin-top: 8px; }
+.logo-byline a:hover { text-decoration: underline; opacity: 1; }
+.tagline { color: var(--muted); font-size: 15px; margin-top: 12px; }
 
 /* ========= Input Bar ========= */
 .input-bar {
