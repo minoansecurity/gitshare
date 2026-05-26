@@ -467,24 +467,36 @@
     var prevTransform = cardWrapper.style.transform;
     cardWrapper.style.transform = 'none';
 
+    var timeout = setTimeout(function () {
+      cardWrapper.style.transform = prevTransform;
+      downloadBtn.classList.remove('busy');
+      downloadBtn.innerHTML = dlBtnHTML;
+      alert('Download timed out. Your browser may be blocking cross-origin images. Try disabling content blockers or use Chrome.');
+    }, 15000);
+
     html2canvas(cardWrapper, {
       width: dim[0], height: dim[1], scale: 2,
       useCORS: true, allowTaint: false, backgroundColor: null, logging: false
     }).then(function (canvas) {
-      canvas.toBlob(function (blob) {
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
-        setTimeout(function () { starModal.style.display = ''; }, 300);
-      }, mime, 0.95);
+      return new Promise(function (resolve, reject) {
+        canvas.toBlob(function (blob) {
+          if (!blob) { reject(new Error('Failed to create image')); return; }
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+          setTimeout(function () { starModal.style.display = ''; }, 300);
+          resolve();
+        }, mime, 0.95);
+      });
     }).catch(function (err) {
       alert('Download failed: ' + err.message);
     }).finally(function () {
+      clearTimeout(timeout);
       cardWrapper.style.transform = prevTransform;
       downloadBtn.classList.remove('busy');
       downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg> Downloaded!';
