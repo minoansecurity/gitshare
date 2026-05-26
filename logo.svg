@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="56" viewBox="0 0 280 56" fill="none">
+  <rect width="56" height="56" rx="12" fill="#082010"/>
+  <path d="M17 28h13m0 0l-5.5-5.5M30 28l-5.5 5.5M39 19v18" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="68" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="36" font-weight="700" fill="#082010">Git<tspan fill="#4e7a3e">Share</tspan><tspan font-weight="400" fill="#999">.ch</tspan></text>
+</svg>

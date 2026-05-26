@@ -1,8 +1,19 @@
-# GitShare.ch
+<p align="center">
+  <img src="logo.svg" alt="GitShare.ch" width="280">
+</p>
 
-Generate beautiful, shareable social media cards from any public GitHub repository. Runs entirely in your browser.
+<p align="center">
+  <strong>Beautiful GitHub repo screenshots for social media</strong><br>
+  Generate shareable cards from any public GitHub repository — entirely in your browser.
+</p>
 
-**Live at [gitshare.ch](https://gitshare.ch)**
+<p align="center">
+  <a href="https://gitshare.ch"><strong>gitshare.ch</strong></a> ·
+  <a href="https://github.com/minoansecurity/gitshare/issues">Issues</a> ·
+  <a href="https://buymeacoffee.com/dimiprasakis">Support</a>
+</p>
+
+---
 
 
 ## How it works
