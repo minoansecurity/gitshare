@@ -158,8 +158,8 @@
   function setTheme(theme) {
     themeBtns.forEach(function (btn) { btn.classList.toggle('active', btn.dataset.theme === theme); });
     var presets = theme === 'dark'
-      ? { bg: '#082010', card: '#f0ebe2', text: '#292929' }
-      : { bg: '#f0ebe2', card: '#ffffff', text: '#292929' };
+      ? { bg: '#082010', card: '#f0ebe2', text: '#082010' }
+      : { bg: '#f0ebe2', card: '#ffffff', text: '#082010' };
     colorBg.value = presets.bg;
     colorCard.value = presets.card;
     colorText.value = presets.text;
