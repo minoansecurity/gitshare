@@ -5,7 +5,7 @@
   Referrer-Policy: no-referrer
   X-XSS-Protection: 0
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-  Content-Security-Policy: default-src 'self' blob:; script-src 'self' https://cdnjs.buymeacoffee.com https://static.cloudflareinsights.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://avatars.githubusercontent.com https://cdn.buymeacoffee.com data: blob:; connect-src https://api.github.com https://*.buymeacoffee.com; frame-src https://*.buymeacoffee.com; form-action 'none'; base-uri 'self';
+  Content-Security-Policy: default-src 'self' blob:; script-src 'self' https://cdnjs.buymeacoffee.com https://static.cloudflareinsights.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://avatars.githubusercontent.com https://cdn.buymeacoffee.com data: blob:; connect-src 'self' https://api.github.com https://*.buymeacoffee.com; frame-src https://*.buymeacoffee.com; form-action 'none'; base-uri 'self';
 
 /css/styles.css
   Cache-Control: public, max-age=2592000, immutable
