@@ -76,7 +76,7 @@
   var brandingOpacity = $('branding-opacity');
   var brandingOpacityValue = $('branding-opacity-value');
   var brandingImg = $('branding-img');
-  var brandingPos = 'top-left';
+  var brandingPos = 'top-right';
   var posBtns = document.querySelectorAll('.pos-btn');
 
   var langColors = {
