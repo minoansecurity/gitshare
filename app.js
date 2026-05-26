@@ -501,8 +501,7 @@
   var isAutoGenerate = true;
 
   function maybeShowStarModal() {
-    if (isAutoGenerate || starShown) return;
-    starShown = true;
+    if (isAutoGenerate) return;
     setTimeout(function () { starModal.style.display = ''; }, 300);
   }
   $('star-modal-close').addEventListener('click', function () { starModal.style.display = 'none'; });
