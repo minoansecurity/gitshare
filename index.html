@@ -26,7 +26,7 @@
   </header>
 
   <div class="input-bar">
-    <input type="text" id="repo-input" placeholder="owner/repo or GitHub URL" value="https://github.com/minoansecurity/gitshare/" autofocus>
+    <input type="text" id="repo-input" placeholder="minoansecurity/gitshare" autofocus>
     <button id="generate-btn">Generate</button>
     <span id="rate-limit" class="rate-limit"></span>
   </div>
@@ -46,13 +46,16 @@
             <div class="description" id="card-desc"></div>
             <div class="stats" id="card-stats"></div>
           </div>
+          <div class="card-branding" id="card-branding" style="display:none">
+            <img id="branding-img" src="" alt="">
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="settings-panel" id="settings-panel" style="display:none">
+    <div class="settings-panel" id="settings-panel">
 
-      <button id="download-btn">
+      <button id="download-btn" disabled>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-0-.002H2.75h10.5ZM7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06l1.97 1.969Z"/></svg>
         Download
       </button>
@@ -102,8 +105,8 @@
 
       <h3>Theme</h3>
       <div class="theme-toggle">
-        <button type="button" class="theme-btn active" data-theme="light">Light</button>
-        <button type="button" class="theme-btn" data-theme="dark">Dark</button>
+        <button type="button" class="theme-btn" data-theme="light">Light</button>
+        <button type="button" class="theme-btn active" data-theme="dark">Dark</button>
       </div>
 
       <div class="settings-divider"></div>
@@ -112,15 +115,15 @@
       <div class="color-row">
         <div class="color-picker-wrap">
           <span>Background</span>
-          <input type="color" id="color-bg" value="#f0ebe2" class="color-wheel">
+          <input type="color" id="color-bg" value="#082010" class="color-wheel">
         </div>
         <div class="color-picker-wrap">
           <span>Card</span>
-          <input type="color" id="color-card" value="#ffffff" class="color-wheel">
+          <input type="color" id="color-card" value="#f0ebe2" class="color-wheel">
         </div>
         <div class="color-picker-wrap">
           <span>Text</span>
-          <input type="color" id="color-text" value="#222820" class="color-wheel">
+          <input type="color" id="color-text" value="#292929" class="color-wheel">
         </div>
       </div>
 
@@ -175,23 +178,45 @@
       <h3>Card Size</h3>
       <div class="scale-row">
         <span class="scale-label">Scale</span>
-        <input type="range" id="scale-slider" min="40" max="180" value="100">
-        <span id="scale-value">100%</span>
-      </div>
-      <div class="scale-row">
-        <span class="scale-label">H. Padding</span>
-        <input type="range" id="hpad-slider" min="0" max="200" value="0">
-        <span id="hpad-value">0</span>
-      </div>
-      <div class="scale-row">
-        <span class="scale-label">V. Padding</span>
-        <input type="range" id="vpad-slider" min="0" max="200" value="0">
-        <span id="vpad-value">0</span>
+        <input type="range" id="hscale-slider" min="40" max="200" value="150">
+        <span id="hscale-value">150%</span>
       </div>
       <div class="scale-row">
         <span class="scale-label">Radius</span>
         <input type="range" id="radius-slider" min="0" max="48" value="12">
         <span id="radius-value">12</span>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <h3>Branding</h3>
+      <label class="toggle-row"><span>Show logo</span><input type="checkbox" id="show-branding" checked><span class="toggle-switch"></span></label>
+      <div id="branding-controls">
+        <label class="file-upload-btn" id="branding-upload-label">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v11.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6H9.75A1.75 1.75 0 0 1 8 4.25V1.5ZM8 .794V4.25c0 .138.112.25.25.25h3.456L8 .794ZM2 1.75C2 .784 2.784 0 3.75 0h5.086c.464 0 .909.184 1.237.513l3.414 3.414c.329.328.513.773.513 1.237v8.086A1.75 1.75 0 0 1 12.25 15h-8.5A1.75 1.75 0 0 1 2 13.25Z"/></svg>
+          Upload your logo
+          <input type="file" id="branding-file" accept=".png,.jpg,.jpeg,.gif,.webp,.bmp" style="display:none">
+        </label>
+        <button type="button" id="branding-reset" class="branding-reset-btn">Remove branding logo</button>
+        <div class="scale-row" style="margin-top:8px">
+          <span class="scale-label">Size</span>
+          <input type="range" id="branding-scale" min="2" max="50" value="4">
+          <span id="branding-scale-value">4</span>
+        </div>
+        <div class="scale-row" style="margin-top:8px">
+          <span class="scale-label">Opacity</span>
+          <input type="range" id="branding-opacity" min="5" max="100" value="80">
+          <span id="branding-opacity-value">80%</span>
+        </div>
+        <div style="margin-top:10px">
+          <span class="scale-label" style="display:block;margin-bottom:6px">Position</span>
+          <div class="branding-position-grid">
+            <button type="button" class="pos-btn active" data-pos="top-left">&#8598; <small>Top left</small></button>
+            <button type="button" class="pos-btn" data-pos="top-right"><small>Top right</small> &#8599;</button>
+            <button type="button" class="pos-btn" data-pos="bottom-left">&#8601; <small>Bottom left</small></button>
+            <button type="button" class="pos-btn" data-pos="bottom-right"><small>Bottom right</small> &#8600;</button>
+          </div>
+        </div>
       </div>
 
       <div class="settings-divider"></div>
@@ -210,6 +235,20 @@
 
     </div>
   </main>
+
+  <div class="star-modal-overlay" id="star-modal" style="display:none">
+    <div class="star-modal">
+      <button type="button" class="star-modal-close" id="star-modal-close">&times;</button>
+      <svg width="28" height="28" viewBox="0 0 16 16" fill="#082010"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+      <p>Enjoying GitShare.ch?</p>
+      <p class="star-modal-sub">A star on GitHub helps others discover this free tool.</p>
+      <a href="https://github.com/minoansecurity/gitshare" target="_blank" rel="noopener" class="star-modal-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z"/></svg>
+        Star on GitHub
+      </a>
+      <button type="button" class="star-modal-dismiss" id="star-modal-dismiss">Maybe later</button>
+    </div>
+  </div>
 
   <footer>
     Made by <a href="https://minoansecurity.com/" target="_blank" rel="noopener">Minoan Security</a>

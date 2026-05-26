@@ -5,6 +5,7 @@
   var repoData = null;
   var bgType = 'solid';
   var bgImageDataURL = null;
+  var brandingDataURL = null; // null = use default
 
   // DOM refs
   var $ = function (id) { return document.getElementById(id); };
@@ -27,12 +28,8 @@
   var customDimsDiv = $('custom-dims');
   var customW = $('custom-w');
   var customH = $('custom-h');
-  var scaleSlider = $('scale-slider');
-  var scaleValue = $('scale-value');
-  var hpadSlider = $('hpad-slider');
-  var hpadValue = $('hpad-value');
-  var vpadSlider = $('vpad-slider');
-  var vpadValue = $('vpad-value');
+  var hscaleSlider = $('hscale-slider');
+  var hscaleValue = $('hscale-value');
   var radiusSlider = $('radius-slider');
   var radiusValue = $('radius-value');
   var colorBg = $('color-bg');
@@ -66,6 +63,21 @@
     issues: $('show-issues'),
     contributors: $('show-contributors')
   };
+
+  var showBranding = $('show-branding');
+  var cardBranding = $('card-branding');
+  var brandingContent = $('branding-content');
+  var brandingFile = $('branding-file');
+  var brandingReset = $('branding-reset');
+
+  var DEFAULT_BRANDING_SRC = 'branding-default.png';
+  var brandingScale = $('branding-scale');
+  var brandingScaleValue = $('branding-scale-value');
+  var brandingOpacity = $('branding-opacity');
+  var brandingOpacityValue = $('branding-opacity-value');
+  var brandingImg = $('branding-img');
+  var brandingPos = 'top-left';
+  var posBtns = document.querySelectorAll('.pos-btn');
 
   var langColors = {
     'Go': '#00ADD8', 'Python': '#3572A5', 'JavaScript': '#f1e05a',
@@ -255,8 +267,8 @@
         issues: num(d.open_issues_count),
         contributors: null
       };
-      settingsPanel.style.display = '';
       renderCard();
+      maybeShowStarModal();
 
       if (toggles.contributors.checked) fetchContributors(repo);
     })
@@ -292,7 +304,7 @@
     if (!repoData) return;
 
     var dim = getDimension();
-    var scale = parseInt(scaleSlider.value) / 100;
+    var scale = parseInt(hscaleSlider.value) / 100;
     var W = dim[0], H = dim[1];
     var cardBg = colorCard.value;
     var txtColor = colorText.value;
@@ -336,17 +348,15 @@
     cardWrapper.style.backgroundPosition = (bgType === 'image' && bgImageDataURL) ? 'center' : '';
 
     // Card
-    var extraH = Math.round((parseInt(hpadSlider.value) || 0) * s);
-    var extraV = Math.round((parseInt(vpadSlider.value) || 0) * s);
     card.style.width = cw + 'px';
-    card.style.padding = (pad + extraV) + 'px ' + (pad + extraH) + 'px';
+    card.style.padding = pad + 'px';
     card.style.background = cardBg;
     card.style.border = '1px solid ' + border;
     card.style.color = txtColor;
-    card.style.borderRadius = Math.round(parseInt(radiusSlider.value) * scale) + 'px';
+    card.style.borderRadius = Math.round(parseInt(radiusSlider.value) * s) + 'px';
 
     // Header
-    cardHeader.style.gap = gap + 'px';
+    cardHeader.style.gap = Math.round(10 * s) + 'px';
     cardHeader.style.marginBottom = gap + 'px';
 
     // Avatar
@@ -391,14 +401,36 @@
       ls.appendChild(langSpan);
       cardStats.appendChild(ls);
     }
-    if (toggles.stars.checked) cardStats.appendChild(makeStat(icons.star, fmt(repoData.stars) + ' stars', txtColor, svgSz, iconGap));
-    if (toggles.forks.checked) cardStats.appendChild(makeStat(icons.fork, fmt(repoData.forks) + ' forks', txtColor, svgSz, iconGap));
+    function pl(n, word) { return fmt(n) + ' ' + word + (n === 1 ? '' : 's'); }
+    if (toggles.stars.checked) cardStats.appendChild(makeStat(icons.star, pl(repoData.stars, 'star'), txtColor, svgSz, iconGap));
+    if (toggles.forks.checked) cardStats.appendChild(makeStat(icons.fork, pl(repoData.forks, 'fork'), txtColor, svgSz, iconGap));
     if (toggles.license.checked && repoData.license) cardStats.appendChild(makeStat(icons.license, repoData.license, txtColor, svgSz, iconGap));
-    if (toggles.issues.checked && repoData.issues > 0) cardStats.appendChild(makeStat(icons.issue, fmt(repoData.issues) + ' issues', txtColor, svgSz, iconGap));
-    if (toggles.contributors.checked && repoData.contributors) cardStats.appendChild(makeStat(icons.people, fmt(repoData.contributors) + ' contributors', txtColor, svgSz, iconGap));
+    if (toggles.issues.checked && repoData.issues > 0) cardStats.appendChild(makeStat(icons.issue, pl(repoData.issues, 'issue'), txtColor, svgSz, iconGap));
+    if (toggles.contributors.checked && repoData.contributors) cardStats.appendChild(makeStat(icons.people, pl(repoData.contributors, 'contributor'), txtColor, svgSz, iconGap));
+
+    // Branding — corner overlay
+    if (showBranding.checked) {
+      var bScale = parseInt(brandingScale.value) / 100;
+      var bH = Math.round(W * bScale);
+      var bPad = Math.round(W * 0.03);
+      var bOp = parseInt(brandingOpacity.value) / 100;
+
+      cardBranding.style.display = '';
+      cardBranding.style.top = brandingPos.indexOf('top') >= 0 ? bPad + 'px' : 'auto';
+      cardBranding.style.bottom = brandingPos.indexOf('bottom') >= 0 ? bPad + 'px' : 'auto';
+      cardBranding.style.left = brandingPos.indexOf('left') >= 0 ? bPad + 'px' : 'auto';
+      cardBranding.style.right = brandingPos.indexOf('right') >= 0 ? bPad + 'px' : 'auto';
+
+      brandingImg.src = brandingDataURL || DEFAULT_BRANDING_SRC;
+      brandingImg.style.height = bH + 'px';
+      brandingImg.style.opacity = bOp;
+    } else {
+      cardBranding.style.display = 'none';
+    }
 
     placeholder.style.display = 'none';
     previewScaler.style.display = 'flex';
+    downloadBtn.disabled = false;
     fitWrapperToPanel(W, H);
   }
 
@@ -443,6 +475,7 @@
       var ext = extensions[fmt] || '.png';
       var dataURL = canvas.toDataURL(mime, 0.95);
       downloadFile(dataURL, basename + ext);
+      maybeShowStarModal();
     }).catch(function (err) {
       alert('Download failed: ' + err.message);
     }).finally(function () {
@@ -461,6 +494,20 @@
       renderCard();
     });
   }
+
+  // ---- Star modal (once per session, after first manual generate) ----
+  var starModal = $('star-modal');
+  var starShown = false;
+  var isAutoGenerate = true;
+
+  function maybeShowStarModal() {
+    if (isAutoGenerate || starShown) return;
+    starShown = true;
+    setTimeout(function () { starModal.style.display = ''; }, 1500);
+  }
+  $('star-modal-close').addEventListener('click', function () { starModal.style.display = 'none'; });
+  $('star-modal-dismiss').addEventListener('click', function () { starModal.style.display = 'none'; });
+  starModal.addEventListener('click', function (e) { if (e.target === starModal) starModal.style.display = 'none'; });
 
   // ---- Wire events ----
 
@@ -490,9 +537,7 @@
   // Sliders
   bindSlider(gradAngle, gradAngleValue, '\u00B0');
   bindSlider(gradMidpoint, gradMidpointValue, '%');
-  bindSlider(scaleSlider, scaleValue, '%');
-  bindSlider(hpadSlider, hpadValue, '');
-  bindSlider(vpadSlider, vpadValue, '');
+  bindSlider(hscaleSlider, hscaleValue, '%');
   bindSlider(radiusSlider, radiusValue, '');
 
   // Background tabs
@@ -548,6 +593,55 @@
     renderCard();
   });
 
+  // Branding
+  showBranding.addEventListener('change', renderCard);
+  brandingFile.addEventListener('change', function () {
+    var file = brandingFile.files[0];
+    if (!file) return;
+    if (!SAFE_MIME.test(file.type) || !SAFE_EXT.test(file.name)) {
+      alert('Only raster images allowed (PNG, JPEG, GIF, WebP, BMP).');
+      brandingFile.value = '';
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Logo too large (max 2MB).');
+      brandingFile.value = '';
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var result = e.target.result;
+      if (typeof result !== 'string' || !SAFE_DATA_PREFIX.test(result)) {
+        alert('Invalid image data.');
+        brandingFile.value = '';
+        return;
+      }
+      brandingDataURL = result;
+      renderCard();
+    };
+    reader.readAsDataURL(file);
+  });
+  brandingReset.addEventListener('click', function () {
+    brandingDataURL = null;
+    brandingFile.value = '';
+    renderCard();
+  });
+  brandingScale.addEventListener('input', function () {
+    brandingScaleValue.textContent = brandingScale.value;
+    renderCard();
+  });
+  brandingOpacity.addEventListener('input', function () {
+    brandingOpacityValue.textContent = brandingOpacity.value + '%';
+    renderCard();
+  });
+  posBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      brandingPos = btn.dataset.pos;
+      posBtns.forEach(function (b) { b.classList.toggle('active', b === btn); });
+      renderCard();
+    });
+  });
+
   // Dimension / format
   dimensionSelect.addEventListener('change', function () {
     customDimsDiv.style.display = dimensionSelect.value === 'custom' ? '' : 'none';
@@ -578,8 +672,17 @@
     }
   });
 
-  // Auto-generate on load
-  if (repoInput.value.trim()) {
+  // Auto-generate on load — use placeholder value, then clear input
+  if (!repoInput.value.trim() && repoInput.placeholder) {
+    currentRepo = parseRepo(repoInput.placeholder);
+    if (currentRepo) {
+      generateBtn.disabled = true;
+      generateBtn.textContent = 'Loading...';
+      fetchRepoData(currentRepo);
+    }
+  } else if (repoInput.value.trim()) {
     generateBtn.click();
   }
+  // After initial auto-generate, next clicks are manual
+  setTimeout(function () { isAutoGenerate = false; }, 2000);
 })();
