@@ -372,28 +372,20 @@
     cardName.style.fontSize = nameSz + 'px';
     cardName.style.color = txtColor;
 
-    // Description — render each word as a separate span for html2canvas Firefox compat
-    cardDesc.innerHTML = '';
+    // Description
     if (toggles.description.checked && repoData.description) {
+      cardDesc.textContent = repoData.description;
       cardDesc.style.display = '';
       cardDesc.style.fontSize = Math.round(16 * s) + 'px';
       cardDesc.style.color = txtColor;
       cardDesc.style.margin = '0 0 ' + gap + 'px 0';
       cardDesc.style.opacity = '0.8';
       cardDesc.style.lineHeight = '1.4';
-      var words = repoData.description.split(/\s+/);
-      for (var wi = 0; wi < words.length; wi++) {
-        if (wi > 0) {
-          var sp = document.createElement('span');
-          sp.innerHTML = '&nbsp;';
-          cardDesc.appendChild(sp);
-        }
-        var ws = document.createElement('span');
-        ws.textContent = words[wi];
-        cardDesc.appendChild(ws);
-      }
+      cardDesc.style.letterSpacing = '0.1px';
+      cardDesc.style.wordWrap = 'break-word';
     } else {
       cardDesc.style.display = 'none';
+      cardDesc.textContent = '';
     }
 
     // Stats
@@ -458,20 +450,19 @@
   // Download via html2canvas
   var dlBtnHTML = downloadBtn.innerHTML;
 
-  function downloadFile(dataURL, filename) {
-    var a = document.createElement('a');
-    a.href = dataURL;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-
   function doDownload() {
     if (!repoData) return;
     var dim = getDimension();
     var fmt = formatSelect.value;
     var basename = currentRepo.replace('/', '-').replace(/[^a-zA-Z0-9._-]/g, '');
+    var mimeTypes = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
+    var extensions = { png: '.png', jpeg: '.jpg', webp: '.webp' };
+    var mime = mimeTypes[fmt] || 'image/png';
+    var ext = extensions[fmt] || '.png';
+    var filename = basename + ext;
+
+    // Open a blank tab immediately (inside user gesture) so Safari doesn't block it
+    var w = window.open('', '_blank');
 
     downloadBtn.classList.add('busy');
     downloadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-0-.002H2.75h10.5ZM7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06l1.97 1.969Z"/></svg> Generating...';
@@ -483,14 +474,24 @@
       width: dim[0], height: dim[1], scale: 2,
       useCORS: true, allowTaint: false, backgroundColor: null, logging: false
     }).then(function (canvas) {
-      var mimeTypes = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
-      var extensions = { png: '.png', jpeg: '.jpg', webp: '.webp' };
-      var mime = mimeTypes[fmt] || 'image/png';
-      var ext = extensions[fmt] || '.png';
-      var dataURL = canvas.toDataURL(mime, 0.95);
-      downloadFile(dataURL, basename + ext);
-      setTimeout(function () { starModal.style.display = ''; }, 300);
+      canvas.toBlob(function (blob) {
+        var url = URL.createObjectURL(blob);
+        if (w) {
+          w.location.href = url;
+        } else {
+          // Fallback: try anchor download
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+        setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+        setTimeout(function () { starModal.style.display = ''; }, 300);
+      }, mime, 0.95);
     }).catch(function (err) {
+      if (w) w.close();
       alert('Download failed: ' + err.message);
     }).finally(function () {
       cardWrapper.style.transform = prevTransform;
