@@ -268,7 +268,24 @@
         issues: num(d.open_issues_count),
         contributors: null
       };
-      renderCard();
+
+      // Convert avatar to data URL so html2canvas never needs cross-origin fetch
+      if (repoData.avatarURL) {
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function () {
+          var c = document.createElement('canvas');
+          c.width = img.naturalWidth;
+          c.height = img.naturalHeight;
+          c.getContext('2d').drawImage(img, 0, 0);
+          try { repoData.avatarURL = c.toDataURL('image/png'); } catch (e) { /* keep original URL */ }
+          renderCard();
+        };
+        img.onerror = function () { renderCard(); };
+        img.src = repoData.avatarURL;
+      } else {
+        renderCard();
+      }
 
       if (toggles.contributors.checked) fetchContributors(repo);
     })
