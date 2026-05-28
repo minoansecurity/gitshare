@@ -95,7 +95,10 @@
             <div class="stats" id="card-stats"></div>
           </div>
           <div class="card-branding" id="card-branding" style="display:none">
-            <img id="branding-img" src="" alt="">
+            <span id="branding-content">
+              <img id="branding-img" src="" alt="" style="display:none">
+              <span class="branding-default-text">gitshare.ch</span>
+            </span>
           </div>
         </div>
       </div>
@@ -147,6 +150,16 @@
         <input type="number" id="custom-w" placeholder="Width" min="100" max="4096" value="1200">
         <span class="custom-dims-x">&times;</span>
         <input type="number" id="custom-h" placeholder="Height" min="100" max="4096" value="630">
+      </div>
+      <label class="toggle-row" style="border-bottom:none;padding:6px 0">
+        <span>Full screen <small style="color:var(--muted);font-weight:400">(no background)</small></span>
+        <input type="checkbox" id="fullscreen-toggle"><span class="toggle-switch"></span>
+      </label>
+      <div id="fs-dims" style="display:none">
+        <div class="bg-type-tabs" style="margin-bottom:0">
+          <button type="button" class="bg-tab fs-dim-btn active" data-fsdim="fs-landscape">Landscape</button>
+          <button type="button" class="bg-tab fs-dim-btn" data-fsdim="fs-square">Square</button>
+        </div>
       </div>
 
       <div class="settings-divider"></div>
@@ -238,31 +251,30 @@
       <div class="settings-divider"></div>
 
       <h3>Branding</h3>
-      <label class="toggle-row"><span>Show logo</span><input type="checkbox" id="show-branding"><span class="toggle-switch"></span></label>
+<label class="toggle-row"><span>Show logo</span><input type="checkbox" id="show-branding" checked><span class="toggle-switch"></span></label>
       <div id="branding-controls">
         <label class="file-upload-btn" id="branding-upload-label">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 1.5a.25.25 0 0 0-.25.25v11.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V6H9.75A1.75 1.75 0 0 1 8 4.25V1.5ZM8 .794V4.25c0 .138.112.25.25.25h3.456L8 .794ZM2 1.75C2 .784 2.784 0 3.75 0h5.086c.464 0 .909.184 1.237.513l3.414 3.414c.329.328.513.773.513 1.237v8.086A1.75 1.75 0 0 1 12.25 15h-8.5A1.75 1.75 0 0 1 2 13.25Z"/></svg>
           Upload your logo
           <input type="file" id="branding-file" accept=".png,.jpg,.jpeg,.gif,.webp,.bmp" style="display:none">
         </label>
-        <button type="button" id="branding-reset" class="branding-reset-btn">Remove branding logo</button>
         <div class="scale-row" style="margin-top:8px">
           <span class="scale-label">Size</span>
-          <input type="range" id="branding-scale" min="2" max="50" value="4">
-          <span id="branding-scale-value">4</span>
+          <input type="range" id="branding-scale" min="2" max="50" value="2">
+          <span id="branding-scale-value">2</span>
         </div>
         <div class="scale-row" style="margin-top:8px">
           <span class="scale-label">Opacity</span>
-          <input type="range" id="branding-opacity" min="5" max="100" value="80">
-          <span id="branding-opacity-value">80%</span>
+          <input type="range" id="branding-opacity" min="5" max="100" value="45">
+          <span id="branding-opacity-value">45%</span>
         </div>
         <div style="margin-top:10px">
           <span class="scale-label" style="display:block;margin-bottom:6px">Position</span>
           <div class="branding-position-grid">
             <button type="button" class="pos-btn" data-pos="top-left">&#8598;<br><small>Top left</small></button>
-            <button type="button" class="pos-btn active" data-pos="top-right">&#8599;<br><small>Top right</small></button>
+            <button type="button" class="pos-btn" data-pos="top-right">&#8599;<br><small>Top right</small></button>
             <button type="button" class="pos-btn" data-pos="bottom-left">&#8601;<br><small>Bottom left</small></button>
-            <button type="button" class="pos-btn" data-pos="bottom-right">&#8600;<br><small>Bottom right</small></button>
+            <button type="button" class="pos-btn active" data-pos="bottom-right">&#8600;<br><small>Bottom right</small></button>
           </div>
         </div>
       </div>

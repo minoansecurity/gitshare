@@ -28,6 +28,10 @@
   var customDimsDiv = $('custom-dims');
   var customW = $('custom-w');
   var customH = $('custom-h');
+  var fullscreenToggle = $('fullscreen-toggle');
+  var fsDimsDiv = $('fs-dims');
+  var fsDimBtns = document.querySelectorAll('.fs-dim-btn');
+  var fsDimValue = 'fs-landscape';
   var hscaleSlider = $('hscale-slider');
   var hscaleValue = $('hscale-value');
   var radiusSlider = $('radius-slider');
@@ -69,15 +73,14 @@
   var cardBranding = $('card-branding');
   var brandingContent = $('branding-content');
   var brandingFile = $('branding-file');
-  var brandingReset = $('branding-reset');
 
-  var DEFAULT_BRANDING_SRC = 'assets/branding-default.png';
+  var DEFAULT_BRANDING_SRC = null; // null = use SVG text default
   var brandingScale = $('branding-scale');
   var brandingScaleValue = $('branding-scale-value');
   var brandingOpacity = $('branding-opacity');
   var brandingOpacityValue = $('branding-opacity-value');
   var brandingImg = $('branding-img');
-  var brandingPos = 'top-right';
+  var brandingPos = 'bottom-right';
   var posBtns = document.querySelectorAll('.pos-btn');
 
   var langColors = {
@@ -101,7 +104,8 @@
     'x-vertical': [720, 1280], 'fb-vertical': [1080, 1359],
     'ig-vertical': [1080, 1350], 'li-vertical': [720, 900],
     'tiktok-vertical': [1080, 1920], 'ig-stories': [1080, 1920],
-    'fb-stories': [1080, 1920], 'tiktok-stories': [1080, 1920]
+    'fb-stories': [1080, 1920], 'tiktok-stories': [1080, 1920],
+    'fs-landscape': [1920, 1080], 'fs-square': [1080, 1080]
   };
 
   // SVG paths for stat icons
@@ -114,6 +118,9 @@
   };
 
   function getDimension() {
+    if (fullscreenToggle.checked) {
+      return dims[fsDimValue] || [1920, 1080];
+    }
     if (dimensionSelect.value === 'custom') {
       var w = Math.max(100, Math.min(4096, parseInt(customW.value) || 1200));
       var h = Math.max(100, Math.min(4096, parseInt(customH.value) || 630));
@@ -328,6 +335,10 @@
   }
 
   // Render live DOM card
+  function isFullscreen() {
+    return fullscreenToggle.checked;
+  }
+
   function renderCard() {
     if (!repoData) return;
 
@@ -336,6 +347,7 @@
     var W = dim[0], H = dim[1];
     var cardBg = colorCard.value;
     var txtColor = colorText.value;
+    var fullscreen = isFullscreen();
 
     // Derive border from card brightness
     var r = parseInt(cardBg.slice(1, 3), 16);
@@ -345,16 +357,18 @@
 
     // Card width adapts to canvas proportions
     var baseW;
-    if (W >= H) { baseW = Math.round(W * 0.55); }
+    if (fullscreen) {
+      baseW = W;
+    } else if (W >= H) { baseW = Math.round(W * 0.55); }
     else if (W === H) { baseW = Math.round(W * 0.70); }
     else { baseW = Math.round(W * 0.80); }
     var maxH = Math.round(H * 0.75);
-    if (baseW * 0.6 > maxH) baseW = Math.round(maxH / 0.6);
+    if (!fullscreen && baseW * 0.6 > maxH) baseW = Math.round(maxH / 0.6);
     if (baseW < 280) baseW = 280;
 
     var fontBase = baseW / 680;
-    var s = scale * fontBase;
-    var cw = Math.round(baseW * scale);
+    var s = fullscreen ? fontBase : scale * fontBase;
+    var cw = fullscreen ? W : Math.round(baseW * scale);
     var pad = Math.round(40 * s);
     var avatarSz = Math.round(56 * s);
     var nameSz = Math.round(24 * s);
@@ -368,18 +382,29 @@
     // Wrapper = exact output resolution
     cardWrapper.style.width = W + 'px';
     cardWrapper.style.height = H + 'px';
-    var bgCSS = getBackgroundCSS();
-    cardWrapper.style.background = bgCSS;
-    cardWrapper.style.backgroundSize = (bgType === 'image' && bgImageDataURL) ? 'cover' : '';
-    cardWrapper.style.backgroundPosition = (bgType === 'image' && bgImageDataURL) ? 'center' : '';
+    if (fullscreen) {
+      cardWrapper.style.background = cardBg;
+      cardWrapper.style.backgroundSize = '';
+      cardWrapper.style.backgroundPosition = '';
+    } else {
+      var bgCSS = getBackgroundCSS();
+      cardWrapper.style.background = bgCSS;
+      cardWrapper.style.backgroundSize = (bgType === 'image' && bgImageDataURL) ? 'cover' : '';
+      cardWrapper.style.backgroundPosition = (bgType === 'image' && bgImageDataURL) ? 'center' : '';
+    }
 
     // Card
     card.style.width = cw + 'px';
+    card.style.height = fullscreen ? H + 'px' : 'auto';
+    card.style.display = fullscreen ? 'flex' : '';
+    card.style.flexDirection = fullscreen ? 'column' : '';
+    card.style.justifyContent = fullscreen ? 'center' : '';
     card.style.padding = pad + 'px';
-    card.style.background = cardBg;
-    card.style.border = '1px solid ' + border;
+    card.style.background = fullscreen ? 'transparent' : cardBg;
+    card.style.border = fullscreen ? 'none' : '1px solid ' + border;
+    card.style.boxShadow = fullscreen ? 'none' : '0 4px 12px rgba(0,0,0,0.15)';
     card.style.color = txtColor;
-    card.style.borderRadius = Math.round(parseInt(radiusSlider.value) * s) + 'px';
+    card.style.borderRadius = fullscreen ? '0' : Math.round(parseInt(radiusSlider.value) * s) + 'px';
 
     // Header
     cardHeader.style.gap = Math.round(10 * s) + 'px';
@@ -455,9 +480,28 @@
       cardBranding.style.left = brandingPos.indexOf('left') >= 0 ? bPad + 'px' : 'auto';
       cardBranding.style.right = brandingPos.indexOf('right') >= 0 ? bPad + 'px' : 'auto';
 
-      brandingImg.src = brandingDataURL || DEFAULT_BRANDING_SRC;
-      brandingImg.style.height = bH + 'px';
-      brandingImg.style.opacity = bOp;
+      if (brandingDataURL) {
+        // Custom uploaded logo
+        brandingImg.style.display = '';
+        brandingImg.src = brandingDataURL;
+        brandingImg.style.height = bH + 'px';
+        brandingImg.style.opacity = bOp;
+        brandingContent.querySelector('.branding-default-text').style.display = 'none';
+      } else {
+        // Default: text "gitshare.ch" — color contrasts with background
+        brandingImg.style.display = 'none';
+        var defaultText = brandingContent.querySelector('.branding-default-text');
+        defaultText.style.display = '';
+        defaultText.style.fontSize = Math.round(bH * 0.7) + 'px';
+        // Determine if background is dark or light to pick contrasting text
+        var bgHex = fullscreen ? cardBg : (bgType === 'solid' ? colorBg.value : (bgType === 'gradient' ? gradColor1.value : '#000000'));
+        var bgR = parseInt(bgHex.slice(1, 3), 16);
+        var bgG = parseInt(bgHex.slice(3, 5), 16);
+        var bgB = parseInt(bgHex.slice(5, 7), 16);
+        var bgLum = (bgR * 299 + bgG * 587 + bgB * 114) / 1000;
+        defaultText.style.color = bgLum < 140 ? '#ffffff' : '#082010';
+        defaultText.style.opacity = bOp;
+      }
     } else {
       cardBranding.style.display = 'none';
     }
@@ -635,12 +679,6 @@
     };
     reader.readAsDataURL(file);
   });
-  brandingReset.addEventListener('click', function () {
-    brandingDataURL = null;
-    brandingFile.value = '';
-    showBranding.checked = false;
-    renderCard();
-  });
   brandingScale.addEventListener('input', function () {
     brandingScaleValue.textContent = brandingScale.value;
     renderCard();
@@ -661,6 +699,22 @@
   dimensionSelect.addEventListener('change', function () {
     customDimsDiv.style.display = dimensionSelect.value === 'custom' ? '' : 'none';
     renderCard();
+  });
+
+  // Full screen toggle
+  fullscreenToggle.addEventListener('change', function () {
+    var fs = fullscreenToggle.checked;
+    fsDimsDiv.style.display = fs ? '' : 'none';
+    dimensionSelect.style.display = fs ? 'none' : '';
+    customDimsDiv.style.display = (!fs && dimensionSelect.value === 'custom') ? '' : 'none';
+    renderCard();
+  });
+  fsDimBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      fsDimValue = btn.dataset.fsdim;
+      fsDimBtns.forEach(function (b) { b.classList.toggle('active', b.dataset.fsdim === fsDimValue); });
+      renderCard();
+    });
   });
   customW.addEventListener('change', renderCard);
   customH.addEventListener('change', renderCard);
